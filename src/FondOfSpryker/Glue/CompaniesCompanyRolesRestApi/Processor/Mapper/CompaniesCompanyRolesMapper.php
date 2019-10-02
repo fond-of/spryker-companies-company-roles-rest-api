@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper;
 
-use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use Generated\Shared\Transfer\CompanyRoleTransfer;
 use Generated\Shared\Transfer\RestCompanyRoleAttributesTransfer;
 use Spryker\Glue\CompanyRolesRestApi\CompanyRolesRestApiConfig;
@@ -45,7 +44,7 @@ class CompaniesCompanyRolesMapper implements CompaniesCompanyRolesMapperInterfac
         );
 
         $companyRolesResource = $this->restResourceBuilder->createRestResource(
-            CompaniesCompanyRolesRestApiConfig::RESOURCE_COMPANIES_COMPANY_ROLES,
+            CompanyRolesRestApiConfig::RESOURCE_COMPANY_ROLES,
             $companyRoleTransfer->getUuid(),
             $restCompanyRoleAttributesTransfer
         );

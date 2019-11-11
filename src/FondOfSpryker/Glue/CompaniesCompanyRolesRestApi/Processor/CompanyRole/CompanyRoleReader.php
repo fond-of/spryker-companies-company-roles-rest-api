@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole;
 
@@ -43,6 +43,7 @@ final class CompanyRoleReader implements CompanyRoleReaderInterface
      * CompanyRoleReader constructor.
      *
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
+     * @param \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface $companiesCompanyRolesMapper
      * @param \Spryker\Client\Company\CompanyClientInterface $companyClient
      * @param \Spryker\Client\CompanyRole\CompanyRoleClientInterface $companyRoleClient
      */

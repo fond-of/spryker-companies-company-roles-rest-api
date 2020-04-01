@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi;
 
@@ -19,8 +19,6 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
 {
     /**
      * @return \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole\CompanyRoleReaderInterface
-     *
-     * @throws \Spryker\Glue\Kernel\Exception\Container\ContainerKeyNotFoundException
      */
     public function createCompanyRolesReader(): CompanyRoleReaderInterface
     {
@@ -43,9 +41,9 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
     }
 
     /**
-     * @return \Spryker\Client\Company\CompanyClientInterface
+     * @throws
      *
-     * @throws \Spryker\Glue\Kernel\Exception\Container\ContainerKeyNotFoundException
+     * @return \Spryker\Client\Company\CompanyClientInterface
      */
     public function getCompanyClient(): CompanyClientInterface
     {
@@ -53,9 +51,9 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
     }
 
     /**
-     * @return \Spryker\Client\CompanyRole\CompanyRoleClientInterface
+     * @throws
      *
-     * @throws \Spryker\Glue\Kernel\Exception\Container\ContainerKeyNotFoundException
+     * @return \Spryker\Client\CompanyRole\CompanyRoleClientInterface
      */
     public function getCompanyRoleClient(): CompanyRoleClientInterface
     {

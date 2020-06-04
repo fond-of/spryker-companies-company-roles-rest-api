@@ -10,4 +10,3 @@ class CompaniesCompanyRolesRestApiConfig
     public const RESPONSE_COMPANY_NOT_FOUND = 'Company not found.';
     public const RESPONSE_DETAILS_ACCESS_DENIED = 'Access Denied';
 }
-

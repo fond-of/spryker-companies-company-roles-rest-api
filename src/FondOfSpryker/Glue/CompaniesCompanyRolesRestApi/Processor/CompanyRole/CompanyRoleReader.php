@@ -40,8 +40,6 @@ final class CompanyRoleReader implements CompanyRoleReaderInterface
     private $companyRoleClient;
 
     /**
-     * CompanyRoleReader constructor.
-     *
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      * @param \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface $companiesCompanyRolesMapper
      * @param \Spryker\Client\Company\CompanyClientInterface $companyClient

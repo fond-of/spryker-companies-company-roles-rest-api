@@ -18,8 +18,6 @@ class CompaniesCompanyRolesMapper implements CompaniesCompanyRolesMapperInterfac
     protected $restResourceBuilder;
 
     /**
-     * CompaniesCompanyRolesMapper constructor.
-     *
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      */
     public function __construct(

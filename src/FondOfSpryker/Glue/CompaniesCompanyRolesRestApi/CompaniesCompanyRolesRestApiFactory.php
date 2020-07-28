@@ -26,7 +26,8 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
             $this->getResourceBuilder(),
             $this->createCompaniesCompanyRolesMapper(),
             $this->getCompanyClient(),
-            $this->getCompanyRoleClient()
+            $this->getCompanyRoleClient(),
+            $this->getCompanyRolesRestResponseFilterPlugins()
         );
     }
 
@@ -58,5 +59,13 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
     public function getCompanyRoleClient(): CompanyRoleClientInterface
     {
         return $this->getProvidedDependency(CompaniesCompanyRolesRestApiDependencyProvider::CLIENT_COMPANY_ROLE);
+    }
+
+    /**
+     * @return \FondOfSpryker\Glue\CompaniesCompanyRolesRestApiExtension\Dependency\Plugin\CompaniesCompanyRolesRestResponseFilterPluginInterface[]
+     */
+    public function getCompanyRolesRestResponseFilterPlugins(): array
+    {
+        return $this->getProvidedDependency(CompaniesCompanyRolesRestApiDependencyProvider::PLUGINS_COMPANY_ROLES_REST_RESPONSE_FILTER);
     }
 }

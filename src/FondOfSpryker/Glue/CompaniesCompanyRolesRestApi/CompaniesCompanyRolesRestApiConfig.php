@@ -10,4 +10,6 @@ class CompaniesCompanyRolesRestApiConfig extends AbstractBundleConfig
 {
     public const RESOURCE_COMPANIES_COMPANY_ROLES = 'companies-company-roles';
     public const CONTROLLER_COMPANIES_COMPANY_ROLES = 'companies-company-roles-resource';
+
+    public const QUERY_FILTERS_PARAMETER = 'filters';
 }

@@ -12,6 +12,8 @@ class CompaniesCompanyRolesRestApiDependencyProvider extends AbstractBundleDepen
     public const CLIENT_COMPANY = 'CLIENT_COMPANY';
     public const CLIENT_COMPANY_ROLE = 'CLIENT_COMPANY_ROLE';
 
+    public const PLUGINS_COMPANY_ROLES_REST_RESPONSE_FILTER = 'PLUGINS_COMPANY_ROLES_REST_RESPONSE_FILTER';
+
     /**
      * @param \Spryker\Glue\Kernel\Container $container
      *
@@ -23,6 +25,7 @@ class CompaniesCompanyRolesRestApiDependencyProvider extends AbstractBundleDepen
 
         $container = $this->addCompanyClient($container);
         $container = $this->addCompanyRoleClient($container);
+        $container = $this->addCompanyRolesRestResponseFilterPlugins($container);
 
         return $container;
     }
@@ -53,5 +56,26 @@ class CompaniesCompanyRolesRestApiDependencyProvider extends AbstractBundleDepen
         };
 
         return $container;
+    }
+    /**
+     * @param \Spryker\Glue\Kernel\Container $container
+     *
+     * @return \Spryker\Glue\Kernel\Container
+     */
+    protected function addCompanyRolesRestResponseFilterPlugins(Container $container): Container
+    {
+        $container[static::PLUGINS_COMPANY_ROLES_REST_RESPONSE_FILTER] = function () {
+            return $this->getCompanyRolesRestResponseFilterPlugins();
+        };
+
+        return $container;
+    }
+
+    /**
+     * @return \FondOfSpryker\Glue\CompaniesCompanyRolesRestApiExtension\Dependency\Plugin\CompaniesCompanyRolesRestResponseFilterPluginInterface[]
+     */
+    protected function getCompanyRolesRestResponseFilterPlugins(): array
+    {
+        return [];
     }
 }

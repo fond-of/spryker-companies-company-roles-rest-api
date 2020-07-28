@@ -4,5 +4,6 @@
     <transfer name="RestCompanyRoleAttributes">
         <property name="name" type="string" />
         <property name="isDefault" type="bool" />
+        <property name="companyUserCollection" type="CompanyUserCollection"/>
     </transfer>
 </transfers>

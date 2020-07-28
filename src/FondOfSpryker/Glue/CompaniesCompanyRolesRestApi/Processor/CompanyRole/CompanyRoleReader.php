@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole;
 
+use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface;
 use FondOfSpryker\Glue\CompaniesRestApi\CompaniesRestApiConfig;
-use FondOfSpryker\Shared\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use Generated\Shared\Transfer\CompanyRoleCriteriaFilterTransfer;
 use Generated\Shared\Transfer\CompanyTransfer;
 use Generated\Shared\Transfer\RestErrorMessageTransfer;
@@ -40,23 +40,30 @@ final class CompanyRoleReader implements CompanyRoleReaderInterface
     private $companyRoleClient;
 
     /**
+     * @var \FondOfSpryker\Glue\CompaniesCompanyRolesRestApiExtension\Dependency\Plugin\CompaniesCompanyRolesRestResponseFilterPluginInterface[]
+     */
+    private $restResponseFilterPlugins;
+
+    /**
      * CompanyRoleReader constructor.
-     *
      * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
      * @param \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface $companiesCompanyRolesMapper
      * @param \Spryker\Client\Company\CompanyClientInterface $companyClient
      * @param \Spryker\Client\CompanyRole\CompanyRoleClientInterface $companyRoleClient
+     * @param \FondOfSpryker\Glue\CompaniesCompanyRolesRestApiExtension\Dependency\Plugin\CompaniesCompanyRolesRestResponseFilterPluginInterface[] $restResponseFilterPlugins
      */
     public function __construct(
         RestResourceBuilderInterface $restResourceBuilder,
         CompaniesCompanyRolesMapperInterface $companiesCompanyRolesMapper,
         CompanyClientInterface $companyClient,
-        CompanyRoleClientInterface $companyRoleClient
+        CompanyRoleClientInterface $companyRoleClient,
+        array $restResponseFilterPlugins
     ) {
         $this->restResourceBuilder = $restResourceBuilder;
         $this->companyClient = $companyClient;
         $this->companyRoleClient = $companyRoleClient;
         $this->companiesCompanyRolesMapper = $companiesCompanyRolesMapper;
+        $this->restResponseFilterPlugins = $restResponseFilterPlugins;
     }
 
     /**
@@ -92,7 +99,32 @@ final class CompanyRoleReader implements CompanyRoleReaderInterface
             $restResponse->addResource($resource);
         }
 
+        if ($this->getRequestParameter($restRequest, CompaniesCompanyRolesRestApiConfig::QUERY_FILTERS_PARAMETER) !== null) {
+            $restResponse = $this->filterRestResponse($restResponse, $restRequest);
+        }
+
         return $restResponse;
+    }
+
+    /**
+     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
+     *
+     * @return array
+     */
+    protected function getAllRequestParameters(RestRequestInterface $restRequest): array
+    {
+        return $restRequest->getHttpRequest()->query->all();
+    }
+
+    /**
+     * @param \Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface $restRequest
+     * @param string $parameterName
+     *
+     * @return string
+     */
+    protected function getRequestParameter(RestRequestInterface $restRequest, string $parameterName): string
+    {
+        return $restRequest->getHttpRequest()->query->get($parameterName, '');
     }
 
     /**
@@ -108,6 +140,23 @@ final class CompanyRoleReader implements CompanyRoleReaderInterface
         }
 
         return null;
+    }
+
+
+    /**
+     * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface $restResponse
+     *
+     * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
+     */
+    protected function filterRestResponse(
+        RestResponseInterface $restResponse,
+        RestRequestInterface $restRequest
+    ): RestResponseInterface {
+        foreach ($this->restResponseFilterPlugins as $restResponseFilterPlugin) {
+            $restResponse = $restResponseFilterPlugin->filter($restResponse, $restRequest);
+        }
+
+        return $restResponse;
     }
 
     /**

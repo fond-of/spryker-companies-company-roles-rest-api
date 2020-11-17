@@ -41,8 +41,6 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
     }
 
     /**
-     * @throws
-     *
      * @return \Spryker\Client\Company\CompanyClientInterface
      */
     public function getCompanyClient(): CompanyClientInterface
@@ -51,8 +49,6 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
     }
 
     /**
-     * @throws
-     *
      * @return \Spryker\Client\CompanyRole\CompanyRoleClientInterface
      */
     public function getCompanyRoleClient(): CompanyRoleClientInterface

@@ -3,31 +3,26 @@
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi;
 
 use Codeception\Test\Unit;
-use Spryker\Client\Company\CompanyClientInterface;
-use Spryker\Client\CompanyRole\CompanyRoleClientInterface;
-use Spryker\Glue\Kernel\Container;
+use FondOfSpryker\Client\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiClient;
+use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole\CompanyRoleReader;
+use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
 
 class CompaniesCompanyRolesRestApiFactoryTest extends Unit
 {
     /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Client\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiClient
+     */
+    protected $clientMock;
+
+    /**
+     * @var mixed|\PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface
+     */
+    protected $restResourceBuilderMock;
+
+    /**
      * @var \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiFactory
      */
     protected $companiesCompanyRolesRestApiFactory;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\Kernel\Container
-     */
-    protected $containerMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Client\Company\CompanyClientInterface
-     */
-    protected $companyClientInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Client\CompanyRole\CompanyRoleClientInterface
-     */
-    protected $companyRoleClientInterfaceMock;
 
     /**
      * @return void
@@ -36,59 +31,49 @@ class CompaniesCompanyRolesRestApiFactoryTest extends Unit
     {
         parent::_before();
 
-        $this->containerMock = $this->getMockBuilder(Container::class)
+        $this->clientMock = $this->getMockBuilder(CompaniesCompanyRolesRestApiClient::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyClientInterfaceMock = $this->getMockBuilder(CompanyClientInterface::class)
+        $this->restResourceBuilderMock = $this->getMockBuilder(RestResourceBuilderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyRoleClientInterfaceMock = $this->getMockBuilder(CompanyRoleClientInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->companiesCompanyRolesRestApiFactory = new class (
+            $this->restResourceBuilderMock
+        ) extends CompaniesCompanyRolesRestApiFactory {
+            /**
+             * @var \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface
+             */
+            protected $restResourceBuilder;
 
-        $this->companiesCompanyRolesRestApiFactory = new CompaniesCompanyRolesRestApiFactory();
-        $this->companiesCompanyRolesRestApiFactory->setContainer($this->containerMock);
+            /**
+             * @param \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface $restResourceBuilder
+             */
+            public function __construct(RestResourceBuilderInterface $restResourceBuilder)
+            {
+                $this->restResourceBuilder = $restResourceBuilder;
+            }
+
+            /**
+             * @return \Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface
+             */
+            public function getResourceBuilder(): RestResourceBuilderInterface
+            {
+                return $this->restResourceBuilder;
+            }
+        };
+        $this->companiesCompanyRolesRestApiFactory->setClient($this->clientMock);
     }
 
     /**
      * @return void
      */
-    public function testGetCompanyClient(): void
+    public function testCreateCompanyRolesReader(): void
     {
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('has')
-            ->willReturn(true);
-
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('get')
-            ->with(CompaniesCompanyRolesRestApiDependencyProvider::CLIENT_COMPANY)
-            ->willReturn($this->companyClientInterfaceMock);
-
-        $this->assertInstanceOf(
-            CompanyClientInterface::class,
-            $this->companiesCompanyRolesRestApiFactory->getCompanyClient()
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetCompanyRoleClient(): void
-    {
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('has')
-            ->willReturn(true);
-
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('get')
-            ->with(CompaniesCompanyRolesRestApiDependencyProvider::CLIENT_COMPANY_ROLE)
-            ->willReturn($this->companyRoleClientInterfaceMock);
-
-        $this->assertInstanceOf(
-            CompanyRoleClientInterface::class,
-            $this->companiesCompanyRolesRestApiFactory->getCompanyRoleClient()
+        static::assertInstanceOf(
+            CompanyRoleReader::class,
+            $this->companiesCompanyRolesRestApiFactory->createCompanyRolesReader()
         );
     }
 }

@@ -8,12 +8,10 @@ use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole\Compan
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole\CompanyRoleReaderInterface;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapper;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface;
-use Spryker\Client\Company\CompanyClientInterface;
-use Spryker\Client\CompanyRole\CompanyRoleClientInterface;
 use Spryker\Glue\Kernel\AbstractFactory;
 
 /**
- * @method \FondOfSpryker\Client\CompaniesRestApi\CompaniesRestApiClientInterface getClient()
+ * @method \FondOfSpryker\Client\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiClientInterface getClient()
  */
 class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
 {
@@ -25,34 +23,17 @@ class CompaniesCompanyRolesRestApiFactory extends AbstractFactory
         return new CompanyRoleReader(
             $this->getResourceBuilder(),
             $this->createCompaniesCompanyRolesMapper(),
-            $this->getCompanyClient(),
-            $this->getCompanyRoleClient()
+            $this->getClient()
         );
     }
 
     /**
      * @return \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface
      */
-    public function createCompaniesCompanyRolesMapper(): CompaniesCompanyRolesMapperInterface
+    protected function createCompaniesCompanyRolesMapper(): CompaniesCompanyRolesMapperInterface
     {
         return new CompaniesCompanyRolesMapper(
             $this->getResourceBuilder()
         );
-    }
-
-    /**
-     * @return \Spryker\Client\Company\CompanyClientInterface
-     */
-    public function getCompanyClient(): CompanyClientInterface
-    {
-        return $this->getProvidedDependency(CompaniesCompanyRolesRestApiDependencyProvider::CLIENT_COMPANY);
-    }
-
-    /**
-     * @return \Spryker\Client\CompanyRole\CompanyRoleClientInterface
-     */
-    public function getCompanyRoleClient(): CompanyRoleClientInterface
-    {
-        return $this->getProvidedDependency(CompaniesCompanyRolesRestApiDependencyProvider::CLIENT_COMPANY_ROLE);
     }
 }

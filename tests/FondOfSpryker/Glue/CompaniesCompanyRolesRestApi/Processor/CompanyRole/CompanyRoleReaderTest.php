@@ -3,55 +3,47 @@
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole;
 
 use Codeception\Test\Unit;
+use FondOfSpryker\Client\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiClientInterface;
+use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface;
-use Generated\Shared\Transfer\CompanyResponseTransfer;
 use Generated\Shared\Transfer\CompanyRoleCollectionTransfer;
 use Generated\Shared\Transfer\CompanyRoleTransfer;
-use Generated\Shared\Transfer\CompanyTransfer;
+use Generated\Shared\Transfer\RestCompanyRoleRequestTransfer;
+use Generated\Shared\Transfer\RestCompanyRoleResponseTransfer;
+use Generated\Shared\Transfer\RestErrorMessageTransfer;
 use Generated\Shared\Transfer\RestUserTransfer;
-use Spryker\Client\Company\CompanyClientInterface;
-use Spryker\Client\CompanyRole\CompanyRoleClientInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface;
 use Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class CompanyRoleReaderTest extends Unit
 {
     /**
-     * @var \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole\CompanyRoleReader
-     */
-    protected $companyRoleReader;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface
      */
-    protected $restResourceBuilderInterfaceMock;
+    protected $restResourceBuilderMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface
      */
-    protected $companiesCompanyRolesMapperInterfaceMock;
+    protected $companiesCompanyRolesMapperMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Client\Company\CompanyClientInterface
      */
-    protected $companyClientInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Client\CompanyRole\CompanyRoleClientInterface
-     */
-    protected $companyRoleClientInterfaceMock;
+    protected $clientMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\Request\Data\RestRequestInterface
      */
-    protected $restRequestInterfaceMock;
+    protected $restRequestMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResponseInterface
      */
-    protected $restResponseInterfaceMock;
+    protected $restResponseMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\RestUserTransfer
@@ -61,27 +53,7 @@ class CompanyRoleReaderTest extends Unit
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceInterface
      */
-    protected $restResourceInterfaceMock;
-
-    /**
-     * @var string
-     */
-    protected $id;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CompanyResponseTransfer
-     */
-    protected $companyResponseTransferMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CompanyTransfer
-     */
-    protected $companyTransferMock;
-
-    /**
-     * @var int
-     */
-    protected $idCompany;
+    protected $restResourceMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CompanyRoleCollectionTransfer
@@ -89,14 +61,19 @@ class CompanyRoleReaderTest extends Unit
     protected $companyRoleCollectionTransferMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CompanyRoleTransfer
-     */
-    protected $companyRoleTransferMock;
-
-    /**
-     * @var array
+     * @var \PHPUnit\Framework\MockObject\MockObject[]|\Generated\Shared\Transfer\CompanyRoleTransfer[]
      */
     protected $companyRoleTransferMocks;
+
+    /**
+     * @var \Generated\Shared\Transfer\RestCompanyRoleResponseTransfer|mixed|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $restCompanyRoleResponseTransferMock;
+
+    /**
+     * @var \FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole\CompanyRoleReader
+     */
+    protected $companyRoleReader;
 
     /**
      * @return void
@@ -105,27 +82,23 @@ class CompanyRoleReaderTest extends Unit
     {
         parent::_before();
 
-        $this->restResourceBuilderInterfaceMock = $this->getMockBuilder(RestResourceBuilderInterface::class)
+        $this->restResourceBuilderMock = $this->getMockBuilder(RestResourceBuilderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companiesCompanyRolesMapperInterfaceMock = $this->getMockBuilder(CompaniesCompanyRolesMapperInterface::class)
+        $this->companiesCompanyRolesMapperMock = $this->getMockBuilder(CompaniesCompanyRolesMapperInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyClientInterfaceMock = $this->getMockBuilder(CompanyClientInterface::class)
+        $this->clientMock = $this->getMockBuilder(CompaniesCompanyRolesRestApiClientInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyRoleClientInterfaceMock = $this->getMockBuilder(CompanyRoleClientInterface::class)
+        $this->restRequestMock = $this->getMockBuilder(RestRequestInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->restRequestInterfaceMock = $this->getMockBuilder(RestRequestInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->restResponseInterfaceMock = $this->getMockBuilder(RestResponseInterface::class)
+        $this->restResponseMock = $this->getMockBuilder(RestResponseInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -133,39 +106,28 @@ class CompanyRoleReaderTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->restResourceInterfaceMock = $this->getMockBuilder(RestResourceInterface::class)
+        $this->restResourceMock = $this->getMockBuilder(RestResourceInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->id = '8063e750-8ee1-11ea-bc55-0242ac130003';
-
-        $this->companyResponseTransferMock = $this->getMockBuilder(CompanyResponseTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->companyTransferMock = $this->getMockBuilder(CompanyTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->idCompany = 3;
 
         $this->companyRoleCollectionTransferMock = $this->getMockBuilder(CompanyRoleCollectionTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyRoleTransferMock = $this->getMockBuilder(CompanyRoleTransfer::class)
+        $this->companyRoleTransferMocks = [
+            $this->getMockBuilder(CompanyRoleTransfer::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+        ];
+
+        $this->restCompanyRoleResponseTransferMock = $this->getMockBuilder(RestCompanyRoleResponseTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyRoleTransferMocks = [
-            $this->companyRoleTransferMock,
-        ];
-
         $this->companyRoleReader = new CompanyRoleReader(
-            $this->restResourceBuilderInterfaceMock,
-            $this->companiesCompanyRolesMapperInterfaceMock,
-            $this->companyClientInterfaceMock,
-            $this->companyRoleClientInterfaceMock
+            $this->restResourceBuilderMock,
+            $this->companiesCompanyRolesMapperMock,
+            $this->clientMock
         );
     }
 
@@ -174,63 +136,67 @@ class CompanyRoleReaderTest extends Unit
      */
     public function testFindCompanyRolesByCompanyId(): void
     {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
-            ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+        $companyUuid = '5481f335-a719-42e4-87c5-a1f78678d437';
+        $idCustomer = 1;
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
+            ->method('createRestResponse')
+            ->willReturn($this->restResponseMock);
+
+        $this->restRequestMock->expects(static::atLeastOnce())
             ->method('getRestUser')
             ->willReturn($this->restUserTransferMock);
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
+        $this->restRequestMock->expects(static::atLeastOnce())
             ->method('findParentResourceByType')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->willReturn($this->restResourceMock);
 
-        $this->restResourceInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceMock->expects(static::atLeastOnce())
             ->method('getId')
-            ->willReturn($this->id);
+            ->willReturn($companyUuid);
 
-        $this->companyClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('findCompanyByUuid')
-            ->willReturn($this->companyResponseTransferMock);
+        $this->restUserTransferMock->expects(static::atLeastOnce())
+            ->method('getSurrogateIdentifier')
+            ->willReturn($idCustomer);
 
-        $this->companyResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getIsSuccessful')
+        $this->clientMock->expects(static::atLeastOnce())
+            ->method('getCompanyRolesByRestCompanyRoleRequest')
+            ->with(
+                static::callback(
+                    static function (RestCompanyRoleRequestTransfer $restCompanyRoleRequestTransfer) use ($companyUuid, $idCustomer) {
+                        return $restCompanyRoleRequestTransfer->getIdCustomer() === $idCustomer
+                            && $restCompanyRoleRequestTransfer->getCompanyUuid() === $companyUuid;
+                    }
+                )
+            )->willReturn($this->restCompanyRoleResponseTransferMock);
+
+        $this->restCompanyRoleResponseTransferMock->expects(static::atLeastOnce())
+            ->method('getIsSuccess')
             ->willReturn(true);
 
-        $this->companyResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getCompanyTransfer')
-            ->willReturn($this->companyTransferMock);
-
-        $this->companyTransferMock->expects($this->atLeastOnce())
-            ->method('getIdCompany')
-            ->willReturn($this->idCompany);
-
-        $this->companyRoleClientInterfaceMock->expects($this->atLeastOnce())
+        $this->restCompanyRoleResponseTransferMock->expects(static::atLeastOnce())
             ->method('getCompanyRoleCollection')
             ->willReturn($this->companyRoleCollectionTransferMock);
 
-        $this->companyRoleCollectionTransferMock->expects($this->atLeastOnce())
+        $this->companyRoleCollectionTransferMock->expects(static::atLeastOnce())
             ->method('getRoles')
             ->willReturn($this->companyRoleTransferMocks);
 
-        $this->companiesCompanyRolesMapperInterfaceMock->expects($this->atLeastOnce())
+        $this->companiesCompanyRolesMapperMock->expects(static::atLeastOnce())
             ->method('mapCompanyRolesResource')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->willReturn($this->restResourceMock);
 
-        $this->restResourceInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceMock->expects(static::atLeastOnce())
             ->method('setPayload')
-            ->willReturn($this->restResourceInterfaceMock);
+            ->willReturn($this->restResourceMock);
 
-        $this->restResponseInterfaceMock->expects($this->atLeastOnce())
+        $this->restResponseMock->expects(static::atLeastOnce())
             ->method('addResource')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->willReturn($this->restResponseMock);
 
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->companyRoleReader->findCompanyRolesByCompanyId(
-                $this->restRequestInterfaceMock
-            )
+        static::assertEquals(
+            $this->restResponseMock,
+            $this->companyRoleReader->findCompanyRolesByCompanyId($this->restRequestMock)
         );
     }
 
@@ -239,60 +205,29 @@ class CompanyRoleReaderTest extends Unit
      */
     public function testFindCompanyRolesByCompanyIdAccessDenied(): void
     {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
+        $this->restResourceBuilderMock->expects(static::atLeastOnce())
             ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->willReturn($this->restResponseMock);
 
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
+        $this->restRequestMock->expects(static::atLeastOnce())
             ->method('getRestUser')
             ->willReturn(null);
 
-        $this->restResponseInterfaceMock->expects($this->atLeastOnce())
+        $this->restResponseMock->expects(static::atLeastOnce())
             ->method('addError')
-            ->willReturn($this->restResponseInterfaceMock);
+            ->with(
+                static::callback(
+                    static function (RestErrorMessageTransfer $restErrorMessageTransfer) {
+                        return $restErrorMessageTransfer->getCode() === CompaniesCompanyRolesRestApiConfig::RESPONSE_CODE_ACCESS_DENIED
+                            && $restErrorMessageTransfer->getStatus() === Response::HTTP_FORBIDDEN
+                            && $restErrorMessageTransfer->getDetail() === CompaniesCompanyRolesRestApiConfig::RESPONSE_DETAILS_ACCESS_DENIED;
+                    }
+                )
+            )->willReturn($this->restResponseMock);
 
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->companyRoleReader->findCompanyRolesByCompanyId(
-                $this->restRequestInterfaceMock
-            )
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function testFindCompanyRolesByCompanyIdCompanyNotFound(): void
-    {
-        $this->restResourceBuilderInterfaceMock->expects($this->atLeastOnce())
-            ->method('createRestResponse')
-            ->willReturn($this->restResponseInterfaceMock);
-
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('getRestUser')
-            ->willReturn($this->restUserTransferMock);
-
-        $this->restRequestInterfaceMock->expects($this->atLeastOnce())
-            ->method('findParentResourceByType')
-            ->willReturn(null);
-
-        $this->companyClientInterfaceMock->expects($this->atLeastOnce())
-            ->method('findCompanyByUuid')
-            ->willReturn($this->companyResponseTransferMock);
-
-        $this->companyResponseTransferMock->expects($this->atLeastOnce())
-            ->method('getIsSuccessful')
-            ->willReturn(false);
-
-        $this->restResponseInterfaceMock->expects($this->atLeastOnce())
-            ->method('addError')
-            ->willReturn($this->restResponseInterfaceMock);
-
-        $this->assertInstanceOf(
-            RestResponseInterface::class,
-            $this->companyRoleReader->findCompanyRolesByCompanyId(
-                $this->restRequestInterfaceMock
-            )
+        static::assertEquals(
+            $this->restResponseMock,
+            $this->companyRoleReader->findCompanyRolesByCompanyId($this->restRequestMock)
         );
     }
 }

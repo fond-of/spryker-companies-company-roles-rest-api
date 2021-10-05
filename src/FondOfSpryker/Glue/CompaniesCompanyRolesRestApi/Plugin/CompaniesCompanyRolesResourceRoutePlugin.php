@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Plugin;
 
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
-use FondOfSpryker\Glue\CompaniesRestApi\CompaniesRestApiConfig;
 use Generated\Shared\Transfer\RestCompanyRoleAttributesTransfer;
 use Spryker\Glue\GlueApplicationExtension\Dependency\Plugin\ResourceRouteCollectionInterface;
 use Spryker\Glue\GlueApplicationExtension\Dependency\Plugin\ResourceRoutePluginInterface;
@@ -57,6 +56,6 @@ class CompaniesCompanyRolesResourceRoutePlugin extends AbstractPlugin implements
      */
     public function getParentResourceType(): string
     {
-        return CompaniesRestApiConfig::RESOURCE_COMPANIES;
+        return CompaniesCompanyRolesRestApiConfig::RESOURCE_COMPANIES;
     }
 }

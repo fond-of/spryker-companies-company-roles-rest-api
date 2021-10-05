@@ -5,9 +5,8 @@ declare(strict_types = 1);
 namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole;
 
 use FondOfSpryker\Client\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiClientInterface;
+use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface;
-use FondOfSpryker\Glue\CompaniesRestApi\CompaniesRestApiConfig;
-use FondOfSpryker\Shared\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use Generated\Shared\Transfer\RestCompanyRoleRequestTransfer;
 use Generated\Shared\Transfer\RestErrorMessageTransfer;
 use Spryker\Glue\GlueApplication\Rest\JsonApi\RestResourceBuilderInterface;
@@ -90,7 +89,7 @@ final class CompanyRoleReader implements CompanyRoleReaderInterface
      */
     protected function findCompanyIdentifier(RestRequestInterface $restRequest): ?string
     {
-        $companyResource = $restRequest->findParentResourceByType(CompaniesRestApiConfig::RESOURCE_COMPANIES);
+        $companyResource = $restRequest->findParentResourceByType(CompaniesCompanyRolesRestApiConfig::RESOURCE_COMPANIES);
         if ($companyResource !== null) {
             return $companyResource->getId();
         }

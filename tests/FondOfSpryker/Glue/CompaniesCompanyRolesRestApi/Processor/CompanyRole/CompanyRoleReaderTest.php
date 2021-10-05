@@ -4,8 +4,8 @@ namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\CompanyRole;
 
 use Codeception\Test\Unit;
 use FondOfSpryker\Client\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiClientInterface;
+use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Processor\Mapper\CompaniesCompanyRolesMapperInterface;
-use FondOfSpryker\Shared\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
 use Generated\Shared\Transfer\CompanyRoleCollectionTransfer;
 use Generated\Shared\Transfer\CompanyRoleTransfer;
 use Generated\Shared\Transfer\RestCompanyRoleRequestTransfer;

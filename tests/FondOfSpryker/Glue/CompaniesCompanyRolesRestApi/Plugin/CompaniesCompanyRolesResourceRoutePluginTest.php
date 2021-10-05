@@ -4,7 +4,6 @@ namespace FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\Plugin;
 
 use Codeception\Test\Unit;
 use FondOfSpryker\Glue\CompaniesCompanyRolesRestApi\CompaniesCompanyRolesRestApiConfig;
-use FondOfSpryker\Glue\CompaniesRestApi\CompaniesRestApiConfig;
 use Generated\Shared\Transfer\RestCompanyRoleAttributesTransfer;
 use Spryker\Glue\GlueApplicationExtension\Dependency\Plugin\ResourceRouteCollectionInterface;
 
@@ -86,7 +85,7 @@ class CompaniesCompanyRolesResourceRoutePluginTest extends Unit
     public function testGetParentResourceType(): void
     {
         $this->assertSame(
-            CompaniesRestApiConfig::RESOURCE_COMPANIES,
+            CompaniesCompanyRolesRestApiConfig::RESOURCE_COMPANIES,
             $this->companiesCompanyRolesResourceRoutePlugin->getParentResourceType()
         );
     }
